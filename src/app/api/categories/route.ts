@@ -34,6 +34,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(newCategory, { status: 201 });
   } catch (error) {
+    console.error("원인 파악 용 에러 로그: ", error);
     return NextResponse.json({ error: '카테고리 생성 실패' }, { status: 500 });
   }
 }
