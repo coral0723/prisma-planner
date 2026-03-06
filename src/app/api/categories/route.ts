@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
 
-// 모든 카테고리를 가져오는 내부 함수 (사용자 정의 이름)
+// 모든 카테고리를 가져오는 내부 함수
 async function getCategories() {
   return await prisma.category.findMany({
     orderBy: { name: 'asc' }, // 이름순 정렬
@@ -21,8 +21,7 @@ export async function GET() {
 // POST: 새 카테고리 생성
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { name, color } = body;
+    const { name, color } = await request.json();
 
     if (!name) {
       return NextResponse.json({ error: '이름은 필수입니다.' }, { status: 400 });
