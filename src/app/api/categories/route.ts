@@ -14,6 +14,7 @@ export async function GET() {
     const categories = await getCategories();
     return NextResponse.json(categories);
   } catch (error) {
+    console.error("원인 파악 용 에러 로그: ", error);
     return NextResponse.json({ error: '목록 조회 실패' }, { status: 500 });
   }
 }

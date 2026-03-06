@@ -16,9 +16,10 @@ export async function GET(request: Request) {
       include: { category: true },
       orderBy: { id: "desc" },
     });
-    
+
     return NextResponse.json(todos);
   } catch (error) {
+    console.error("원인 파악 용 에러 로그: ", error);
     return NextResponse.json({ error: '할 일 목록 조회 실패' }, { status: 500 });
   }
 }
