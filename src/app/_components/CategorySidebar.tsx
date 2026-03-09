@@ -1,37 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { axiosApi } from "../../../lib/axios";
+import { useCallback, useEffect, useState } from "react";
+import { axiosApi } from "../_lib/axios";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Category } from "@/model/Category";
+import AddCategoryDialog from "./AddCategoryDialog";
 
-export function CategorySidebar() {
+export default function CategorySidebar() {
   const [categories, setCategories] = useState<Category[]>([]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data } = await axiosApi.get("/categories");
-        setCategories(data);
-      } catch (error) {
-        console.error("카테고리 로딩 실패:", error);
-      }
-    };
-    fetchCategories();
+  const fetchCategories = useCallback(async () => {
+    try {
+      const { data } = await axiosApi.get("/categories");
+      setCategories(data);
+    } catch (error) {
+      console.error("카테고리 로딩 실패:", error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   // 사이드바 내부 콘텐츠
   const SidebarContent = () => (
     <div className="flex flex-col h-full py-4">
       <div className="px-4 mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold tracking-tight">Planner</h2>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
-          <Plus className="h-4 w-4" />
-        </Button>
+        <AddCategoryDialog onSuccess={fetchCategories}/>
       </div>
       
       <Separator className="mb-4" />

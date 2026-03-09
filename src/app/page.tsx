@@ -1,4 +1,4 @@
-import { CategorySidebar } from "@/app/_components/CategorySidebar";
+import CategorySidebar from "@/app/_components/CategorySidebar";
 
 export default function Home() {
   return (
