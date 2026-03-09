@@ -52,6 +52,18 @@ export function TodoList({ categoryId }: Props) {
     }
   };
 
+  // 할 일 상태 토글 함수
+  const toggleTodo = async (id: number, currentStatus: boolean) => {
+    try {
+      await axiosApi.patch(`/todos/${id}`, {
+        completed: !currentStatus,
+      });
+      fetchTodos();
+    } catch (error) {
+      console.error("상태 변경 실패:", error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* 할 일 추가 폼 (카테고리가 선택되었을 때만 노출) */}
@@ -75,10 +87,17 @@ export function TodoList({ categoryId }: Props) {
           todos.map((todo) => (
             <Card key={todo.id} className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Checkbox id={`todo-${todo.id}`} checked={todo.completed} />
+                <Checkbox 
+                  id={`todo-${todo.id}`} 
+                  className="cursor-pointer"
+                  checked={todo.completed}
+                  onCheckedChange={() => toggleTodo(todo.id, todo.completed)} 
+                />
                 <label 
                   htmlFor={`todo-${todo.id}`}
-                  className={`text-sm font-medium ${todo.completed ? 'line-through text-muted-foreground' : ''}`}
+                  className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+                    todo.completed ? 'line-through text-muted-foreground' : ''
+                  }`}
                 >
                   {todo.title}
                 </label>
