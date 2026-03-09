@@ -1,27 +1,36 @@
-import CategorySidebar from "@/app/_components/CategorySidebar";
+"use client";
+
+import { useState } from "react";
+import CategorySidebar from "../app/_components/CategorySidebar";
+import { TodoList } from "../app/_components/TodoList";
 
 export default function Home() {
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedCategoryName, setSelectedCategoryName] = useState<string>("전체 목록");
+
+  const handleSelectCategory = (id: number | null, name: string) => {
+    setSelectedCategoryId(id);
+    setSelectedCategoryName(name);
+  };
+
   return (
     <div className="flex min-h-screen">
-      {/* 왼쪽 사이드바 */}
-      <CategorySidebar />
+      {/* 사이드바에 선택 핸들러 전달 */}
+      <CategorySidebar 
+        onSelectCategory={handleSelectCategory} 
+        selectedId={selectedCategoryId} 
+      />
 
-      {/* 오른쪽 메인 화면 영역 */}
       <main className="flex-1 p-6 lg:p-10">
         <div className="max-w-4xl mx-auto">
           <header className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground pl-12 lg:pl-0">
-              오늘의 할 일
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              {selectedCategoryName}
             </h1>
-            <p className="text-muted-foreground pl-12 lg:pl-0">
-              카테고리를 선택하고 일정을 관리하세요.
-            </p>
           </header>
 
-          {/* 여기에 TodoList 컴포넌트가 들어올 예정 */}
-          <div className="rounded-xl border border-dashed border-muted-foreground/20 h-[500px] flex items-center justify-center bg-muted/5">
-             <p className="text-muted-foreground">할 일 목록을 불러오는 중입니다...</p>
-          </div>
+          {/* 할 일 목록 컴포넌트 */}
+          <TodoList categoryId={selectedCategoryId} />
         </div>
       </main>
     </div>

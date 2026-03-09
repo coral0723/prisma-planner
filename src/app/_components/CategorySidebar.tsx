@@ -10,7 +10,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Category } from "@/model/Category";
 import AddCategoryDialog from "./AddCategoryDialog";
 
-export default function CategorySidebar() {
+type Props = {
+  onSelectCategory: (id: number | null, name: string) => void;
+  selectedId: number | null;
+}
+
+export default function CategorySidebar({ onSelectCategory, selectedId }: Props) {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const fetchCategories = useCallback(async () => {
@@ -30,19 +35,35 @@ export default function CategorySidebar() {
   const SidebarContent = () => (
     <div className="flex flex-col h-full py-4">
       <div className="px-4 mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold tracking-tight">Planner</h2>
-        <AddCategoryDialog onSuccess={fetchCategories}/>
+        <button 
+          onClick={() => onSelectCategory(null, "전체 목록")}
+          className="text-xl font-bold tracking-tight hover:text-primary transition-colors"
+        >
+          Planner
+        </button>
+        <AddCategoryDialog onSuccess={fetchCategories} />
       </div>
       
       <Separator className="mb-4" />
 
       <ScrollArea className="flex-1 px-2">
         <div className="space-y-1">
+          {/* 전체보기 버튼 추가 */}
+          <Button
+            variant={selectedId === null ? "secondary" : "ghost"}
+            className="w-full justify-start font-normal"
+            onClick={() => onSelectCategory(null, "전체 목록")}
+          >
+            <div className="w-3 h-3 rounded-full mr-3 border border-dashed" />
+            <span>전체보기</span>
+          </Button>
+
           {categories.map((category) => (
             <Button
               key={category.id}
-              variant="ghost"
+              variant={selectedId === category.id ? "secondary" : "ghost"}
               className="w-full justify-start font-normal"
+              onClick={() => onSelectCategory(category.id, category.name)}
             >
               <div 
                 className="w-3 h-3 rounded-full mr-3" 
@@ -51,9 +72,6 @@ export default function CategorySidebar() {
               <span className="truncate">{category.name}</span>
             </Button>
           ))}
-          {categories.length === 0 && (
-            <p className="text-sm text-muted-foreground px-4 py-2">카테고리가 없습니다.</p>
-          )}
         </div>
       </ScrollArea>
     </div>
