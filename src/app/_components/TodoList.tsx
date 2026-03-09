@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Todo } from "@/model/Todo";
 
 type Props = {
@@ -64,6 +64,19 @@ export function TodoList({ categoryId }: Props) {
     }
   };
 
+  // 할 일 삭제 함수
+  const deleteTodo = async (id: number) => {
+    if (!confirm("정말 이 할 일을 삭제하시겠습니까?")) return;
+
+    try {
+      await axiosApi.delete(`/todos/${id}`);
+      // 삭제 후 목록 새로고침
+      fetchTodos();
+    } catch (error) {
+      console.error("삭제 실패:", error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* 할 일 추가 폼 (카테고리가 선택되었을 때만 노출) */}
@@ -85,7 +98,7 @@ export function TodoList({ categoryId }: Props) {
       <div className="grid gap-3">
         {todos.length > 0 ? (
           todos.map((todo) => (
-            <Card key={todo.id} className="p-4 flex items-center justify-between">
+            <Card key={todo.id} className="p-4 flex flex-row items-center justify-between group">
               <div className="flex items-center gap-3">
                 <Checkbox 
                   id={`todo-${todo.id}`} 
@@ -102,6 +115,15 @@ export function TodoList({ categoryId }: Props) {
                   {todo.title}
                 </label>
               </div>
+              {/* 삭제 버튼 추가: 평소에는 투명하다가 카드에 마우스를 올리면 나타나도록 설정(group-hover) */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => deleteTodo(todo.id)}
+                className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </Card>
           ))
         ) : (
