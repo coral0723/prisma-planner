@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
 import { auth } from '@/auth';
 
+export const dynamic = 'force-dynamic';
+
 // GET: 카테고리 목록 조회
 export async function GET() {
   try {
